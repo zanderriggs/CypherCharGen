@@ -1,0 +1,12 @@
+﻿@CypherCharGen_HostAddress = http://localhost:5276
+
+POST {{CypherCharGen_HostAddress}}/todoitems
+
+Content-Type: application/json
+
+{
+  "name":"walk dog",
+  "isComplete":true
+}
+
+###

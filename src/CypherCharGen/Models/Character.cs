@@ -7,4 +7,6 @@
         Type Type { get; set; }
         Focus Focus { get; set; }
     }
+
+    
 }
