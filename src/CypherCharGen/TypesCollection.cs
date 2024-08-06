@@ -1,4 +1,6 @@
 ﻿using CypherCharGen.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Xml.Linq;
 
 namespace CypherCharGen;
 
@@ -75,5 +77,30 @@ public static class TypesCollection
             Page = charactertype.Page,
             Description = charactertype.Description,
         });
+    }
+
+    public static void UpdateCharacterType(CharacterType charactertype)
+    {
+        var typeToUpdate = Types.FirstOrDefault(x => x.Id == charactertype.Id);
+
+        if (typeToUpdate is not null)
+        {
+            typeToUpdate.Name = charactertype.Name;
+            typeToUpdate.Might = charactertype.Might;
+            typeToUpdate.Speed = charactertype.Speed;
+            typeToUpdate.Intellect = charactertype.Intellect;
+            typeToUpdate.MightEdge = charactertype.MightEdge;
+            typeToUpdate.SpeedEdge = charactertype.SpeedEdge;
+            typeToUpdate.IntellectEdge = charactertype.IntellectEdge;
+            typeToUpdate.Effort = charactertype.Effort;
+            typeToUpdate.Shins = charactertype.Shins;
+            typeToUpdate.Page = charactertype.Page;
+            typeToUpdate.Description = charactertype.Description;
+        }
+        else
+        {
+            throw new Exception("Type not found.");
+        }
+
     }
 }
