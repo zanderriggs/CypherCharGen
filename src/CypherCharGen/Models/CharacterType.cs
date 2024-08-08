@@ -1,4 +1,6 @@
-﻿namespace CypherCharGen.Models;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace CypherCharGen.Models;
 
 public class CharacterType
 {
@@ -19,4 +21,10 @@ public class CharacterType
     public int Shins { set; get; }
     public string Page { set; get; }
     public string Description { set; get; }
+}
+
+class CharacterTypeDb : DbContext
+{
+    public CharacterTypeDb(DbContextOptions options) : base(options) { }
+    public DbSet<CharacterType> CharacterTypes { get; set; }
 }

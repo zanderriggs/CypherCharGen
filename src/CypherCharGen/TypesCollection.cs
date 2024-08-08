@@ -1,6 +1,4 @@
 ﻿using CypherCharGen.Models;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Xml.Linq;
 
 namespace CypherCharGen;
 
@@ -59,7 +57,7 @@ public static class TypesCollection
         });
     }
 
-    public static void addNewCharacterType(CharacterType charactertype)
+    public static void AddNewCharacterType(CharacterType charactertype)
     {
         var latestId = Types.Max(x => x.Id);
         Types.Add(new CharacterType()

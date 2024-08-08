@@ -2,10 +2,10 @@
 
 public class Character
 {
-    string Name { get; set; }
-    Descriptor Descriptor { get; set; }
-    Type Type { get; set; }
-    Focus Focus { get; set; }
+    public string Name { get; set; }
+    public Descriptor Descriptor { get; set; }
+    public Type Type { get; set; }
+    public Focus Focus { get; set; }
 }
 
 

@@ -1,70 +1,76 @@
 using CypherCharGen;
 using CypherCharGen.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddDbContext<CharacterTypeDb>(options => options.UseInMemoryDatabase("items"));
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Cypher System Generator",
+        Description = "Making characters in the ",
+        Version = "v1"
+    });
+});
+
 var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PizzaStore API V1");
+    });
+}
 
 // Initialize static test data
 TypesCollection.Init();
 
-
-// Hello World endpoint
-//app.MapGet("/", () => "Hello World!");
-
 // Get all character types
-app.MapGet("/Types", () =>
-{
-    return TypesCollection.Types;
-});
+app.MapGet("/type", async (CharacterTypeDb db) => await db.CharacterTypes.ToListAsync());
 
 // Get single character type
-app.MapGet("/Types/{id}", (HttpRequest request) =>
-{
-    if (request.RouteValues["id"] is not  null)
-    {
-        var typeId = int.Parse(request.RouteValues?["id"].ToString() ?? "0");
-        var typeToReturn = TypesCollection.Types.FirstOrDefault(x => x.Id == typeId);
-        return typeToReturn;
-    }
-    return null;
-});
+app.MapGet("/type/{id}", async(CharacterTypeDb db, int id) => await db.CharacterTypes.FindAsync(id));
 
 // Create new character type
-app.MapPost("/Types", (CharacterType newCharacterType) =>
+app.MapPost("/type", async (CharacterTypeDb db, CharacterType newCharacterType) =>
 {
-    TypesCollection.addNewCharacterType(newCharacterType);
-    return Results.Ok();
+    await db.CharacterTypes.AddAsync(newCharacterType);
+    await db.SaveChangesAsync();
+    return Results.Created($"/type/{newCharacterType.Id}", newCharacterType);
 });
 
 // Update character type
-app.MapPut("/Types", (CharacterType characterTypeToUpdate) =>
+app.MapPut("/type/{id}", async (CharacterTypeDb db, CharacterType characterTypeToUpdate, int id) =>
 {
-    try
+    var characterType = await db.CharacterTypes.FindAsync(id);
+    if (characterType is null)
     {
-        TypesCollection.UpdateCharacterType(characterTypeToUpdate);
-        return Results.Ok();
+        return Results.NotFound();
     }
-    catch (Exception ex)
-    {
-        return Results.Problem(ex.Message);
-    }
+
+    db.Entry(characterType).CurrentValues.SetValues(characterTypeToUpdate);
+
+    await db.SaveChangesAsync();
+    return Results.Ok();
 });
 
 // Delete character type
-app.MapDelete("/Types/{id}", (HttpRequest request) =>
+app.MapDelete("/type/{id}", async (CharacterTypeDb db, int id) =>
 {
-    var id = int.Parse(request.RouteValues?["id"].ToString() ?? "0");
-    var typeToDelete = TypesCollection.Types.FirstOrDefault(x => x.Id == id);
+    var characterType = await db.CharacterTypes.FindAsync(id);
+    if (characterType is null)
+    {
+        return Results.NotFound();
+    }
 
-    if (typeToDelete is not null)
-    {
-        TypesCollection.Types.Remove(typeToDelete);
-        return Results.Ok(); ;
-    }
-    else
-    {
-        return Results.Problem("Character type to delete not found.");
-    }
+    db.CharacterTypes.Remove(characterType);
+    await db.SaveChangesAsync();
+    return Results.Ok();
 });
 
 app.Run();

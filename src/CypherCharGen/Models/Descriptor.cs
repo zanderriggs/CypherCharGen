@@ -2,20 +2,20 @@
 
 public class Descriptor
 {
-    int Id { set; get; }
-    string Name { set; get; }
-    int Might { set; get; }
-    int Speed { set; get; }
-    int Intellect { set; get; }
-    int Armor { set; get; }
-    int Recovery { set; get; }
+    public int Id { set; get; }
+    public string Name { set; get; }
+    public int Might { set; get; }
+    public int Speed { set; get; }
+    public int Intellect { set; get; }
+    public int Armor { set; get; }
+    public int Recovery { set; get; }
     // Add these once the other models are created
     //List<> Trait { set; get; }
     //List<> Training { set; get; }
     //List<> Inability { set; get; }
     //List<> Equipment { set; get; }
-    int Shins { set; get; }
-    string Page { set; get; }
-    string Description { set; get; }
+    public int Shins { set; get; }
+    public string Page { set; get; }
+    public string Description { set; get; }
 
 }
